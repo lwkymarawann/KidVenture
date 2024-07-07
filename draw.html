@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Draw and Speak</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #B8F3F4;
+            color: #333;
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: #5A2768;
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            font-size: 17px;
+            color: #f2f2f2;
+            padding: 14px 20px;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: #5A2768;
+            border-radius: 5px;
+        }
+
+        .content {
+            display: flex;
+            height: calc(100vh - 50px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #5A2768;
+            padding: 15px;
+            box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            color: #EDE0D4;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .sidebar .gallery-images {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar .gallery-images li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar .gallery-images li img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+
+        .sidebar .gallery-images li img:hover {
+            transform: scale(1.05);
+        }
+
+        .canvas-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #B8F3F4;
+            position: relative;
+        }
+
+        canvas {
+            border: 2px solid #5A2768;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            background-color: #5A2768;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #555;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+        }
+
+        .control-btn:hover {
+            background-color: #777;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .control-btn:active {
+            transform: scale(0.95);
+        }
+
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .color-picker label {
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .color-picker input[type="color"] {
+            width: 40px;
+            height: 40px;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .color-picker input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+        .color-picker input[type="color"]::-moz-color-swatch {
+            border: none;
+            border-radius: 50%;
+        }
+
+        #feedback {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background-color: #fff;
+            border: 1px solid #5A2768;
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #micBtn.active {
+            background-color: red;
+        }
+
+        #publishBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+            display: none;
+            margin-top: 10px;
+        }
+
+        #publishBtn:hover {
+            background-color: #218838;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        #publishBtn:active {
+            transform: scale(0.95);
+        }
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        }
+
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          width: 120px;
+          background-color: black;
+          color: #fff;
+          text-align: center;
+          border-radius: 6px;
+          padding: 5px 0;
+
+          /* Position the tooltip */
+          position: absolute;
+          z-index: 1;
+          top: -5px;
+          right: 105%;
+        }
+
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="tooltip">
+            <img src='model/house.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+                  <span class="tooltiptext">Home!</span>
+
+        </a>
+        <a href="gallery.html" class="tooltip">
+            <img src='model/gallery.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+                  <span class="tooltiptext">Gallery!</span>
+
+        </a>
+
+    </div>
+
+    <div class="content">
+        <div class="sidebar">
+            <h2>Uploaded Images</h2>
+            <ul class="gallery-images">
+                <!-- Only the desired image element -->
+            </ul>
+        </div>
+
+        <div class="canvas-container">
+            <div class="controls">
+                <button class="control-btn" id="undoBtn">Undo</button>
+                <button class="control-btn" id="resetBtn">Reset</button>
+                <div class="color-picker">
+                    <label for="colorInput">Color:</label>
+                    <input type="color" id="colorInput" value="#000000">
+                </div>
+                <button class="control-btn" id="micBtn">
+                    <img src="model/miccion.ico" alt="Icon" style="width: 40px; height: 35px; vertical-align: middle;">
+
+<!--                    Speak-->
+
+                </button>
+            </div>
+            <canvas id="canvas" width="1000" height="700"></canvas>
+            <div id="feedback"></div>
+            <button id="publishBtn">Publish</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const undoBtn = document.getElementById('undoBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const micBtn = document.getElementById('micBtn');
+        const colorInput = document.getElementById('colorInput');
+        const feedbackDiv = document.getElementById('feedback');
+        const galleryList = document.querySelector('.gallery-images');
+        const publishBtn = document.getElementById('publishBtn');
+        let isDrawing = false;
+        let x = 0;
+        let y = 0;
+        let drawings = [];
+        let currentDrawing = -1;
+        let strokeColor = '#000000';
+        let recognition;
+        let selectedVoice;
+        let latestAudio = null;
+
+        function startDrawing(e) {
+            isDrawing = true;
+            [x, y] = [e.offsetX, e.offsetY];
+            saveDrawingState();
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+            ctx.strokeStyle = strokeColor;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            [x, y] = [e.offsetX, e.offsetY];
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.closePath();
+        }
+
+        function stopDrawing() {
+            if (isDrawing) {
+                isDrawing = false;
+                saveDrawingState();
+            }
+        }
+
+        function saveDrawingState() {
+            if (currentDrawing < drawings.length - 1) {
+                drawings = drawings.slice(0, currentDrawing + 1);
+            }
+            drawings.push(canvas.toDataURL());
+            currentDrawing++;
+        }
+
+        function undo() {
+            if (currentDrawing > 0) {
+                currentDrawing--;
+                const img = new Image();
+                img.src = drawings[currentDrawing];
+                img.onload = () => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(img, 0, 0);
+                };
+            }
+        }
+
+        function resetCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawings = [];
+            currentDrawing = -1;
+        }
+
+        function loadImagesFromLocalStorage() {
+            const images = JSON.parse(localStorage.getItem('uploadedImages')) || [];
+            galleryList.innerHTML = ''; // Clear previous list
+            images.forEach((src, index) => {
+                const li = document.createElement('li');
+                const img = document.createElement('img');
+                img.src = src;
+                img.id = `img-${index}`;
+                img.draggable = false;
+                img.addEventListener('click', () => loadImageToCanvas(img));
+                li.appendChild(img);
+                galleryList.appendChild(li);
+            });
+        }
+
+        function loadImageToCanvas(img) {
+            const imgObj = new Image();
+            imgObj.src = img.src;
+            imgObj.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(imgObj, 0, 0, canvas.width, canvas.height);
+                saveDrawingState();
+            };
+        }
+
+        function toggleMic() {
+            if (recognition) {
+                if (micBtn.classList.contains('active')) {
+                    recognition.stop();
+                    micBtn.classList.remove('active');
+                } else {
+                    recognition.start();
+                    micBtn.classList.add('active');
+                }
+            }
+        }
+
+        function checkSentence(transcript, correctedSentence) {
+            return transcript.trim().toLowerCase() === correctedSentence.trim().toLowerCase();
+        }
+
+        async function getCorrection(text) {
+            const response = await fetch('https://api.languagetool.org/v2/check', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    text: text,
+                    language: 'en-US'
+                })
+            });
+            const result = await response.json();
+            let correctedSentence = text;
+            result.matches.forEach(match => {
+                correctedSentence = correctedSentence.replace(match.context.text.substring(match.context.offset, match.context.offset + match.context.length), match.replacements[0].value);
+            });
+            return correctedSentence;
+        }
+
+        async function onSpeechResult(event) {
+            const transcript = event.results[0][0].transcript;
+            const correctedSentence = await getCorrection(transcript);
+            const sentenceCorrect = checkSentence(transcript, correctedSentence);
+
+            if (sentenceCorrect) {
+                feedbackDiv.textContent = `Good job! You said "${transcript}" correctly.`;
+                speak(`Good job! You said "${transcript}" correctly.`);
+                publishBtn.style.display = 'block';
+            } else {
+                feedbackDiv.textContent = `That was close. You should say "${correctedSentence}". Say it with me: "${correctedSentence}". One more time: "${correctedSentence}".`;
+                speak(`That was close. You should say "${correctedSentence}". Say it with me: "${correctedSentence}". One more time: "${correctedSentence}".`);
+                publishBtn.style.display = 'none';
+            }
+
+            const synth = window.speechSynthesis;
+            synth.cancel();
+            const utterThis = new SpeechSynthesisUtterance(sentenceCorrect ? transcript : correctedSentence);
+            synth.speak(utterThis);
+            utterThis.onend = () => {
+                latestAudio = new Blob([utterThis], { type: 'audio/webm' });
+            };
+        }
+
+        function speak(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.voice = selectedVoice;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function loadVoices() {
+            const voices = window.speechSynthesis.getVoices();
+            voices.forEach(voice => console.log(voice.name, voice.lang));
+            selectedVoice = voices.find(voice => voice.name === 'Google UK English Female' || voice.name === 'Microsoft Zira - English (United States)');
+
+            if (!selectedVoice) {
+                feedbackDiv.textContent = 'Desired voice not found. Using default voice.';
+            }
+        }
+
+        function publishContent() {
+    if (latestAudio && canvas.toDataURL()) {
+        latestAudio.arrayBuffer().then(buffer => {
+            const audioArray = Array.from(new Uint8Array(buffer));
+            localStorage.setItem('publishedAudio', JSON.stringify(audioArray));
+            localStorage.setItem('publishedImage', canvas.toDataURL());
+            window.location.href = 'sm.html';
+        });
+    } else {
+        alert('There is no content to publish.');
+    }
+}
+
+
+        if ('webkitSpeechRecognition' in window) {
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.onresult = onSpeechResult;
+            recognition.onend = () => {
+                micBtn.textContent = 'Speak';
+                micBtn.classList.remove('active');
+            };
+        } else {
+            feedbackDiv.textContent = 'Speech recognition not supported in this browser.';
+        }
+
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+        undoBtn.addEventListener('click', undo);
+        resetBtn.addEventListener('click', resetCanvas);
+        colorInput.addEventListener('input', (e) => {
+            strokeColor = e.target. value;
+        });
+        micBtn.addEventListener('click', toggleMic);
+        publishBtn.addEventListener('click', publishContent);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadImagesFromLocalStorage();
+            loadVoices();
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+        });
+    </script>
+</body>
+</html>

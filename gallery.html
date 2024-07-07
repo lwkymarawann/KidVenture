@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #B8F3F4; /* Light blue background */
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .navbar {
+            background-color: #5A2768; /* Dark purple */
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar a {
+            font-size: 17px;
+            color: #f2f2f2; /* Light text */
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+
+        .content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px 20px 20px; /* Adjusted padding to fit under the navbar */
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        .gallery {
+            margin-top: 20px;
+        }
+
+        .gallery-images {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .gallery-images li {
+            position: relative;
+            max-width: 200px;
+        }
+
+        .gallery-images li img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .gallery-images li img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+
+        .gallery-images li .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: rgba(255, 0, 0, 0.7); /* Red */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 3px;
+            display: none;
+        }
+
+        .gallery-images li:hover .remove-btn {
+            display: block;
+        }
+
+        .upload-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #5A2768; /* Dark purple */
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .upload-btn:hover {
+            background-color: #777;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+        .tooltip .tooltiptext {
+          visibility: hidden;
+          width: 120px;
+          background-color: black;
+          color: #fff;
+          text-align: center;
+          padding: 5px 0;
+          border-radius: 6px;
+
+          /* Position the tooltip text - see examples below! */
+          position: absolute;
+          z-index: 1;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .tooltip:hover .tooltiptext {
+          visibility: visible;
+        }
+        .tooltip {
+          position: relative;
+          display: inline-block;
+          border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="index.html" class="tooltip">
+
+            <img src='model/house.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+                <span class="tooltiptext">Home!</span>
+        </a>
+            <a href="ts.html" class="tooltip">
+    <img src='model/treasure (1).png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+                <span class="tooltiptext">Treasure Box!</span>
+            </a>
+        <a href="draw.html" class="tooltip">
+            <img src='model/voice-message.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+                <span class="tooltiptext">School Board!</span>
+
+
+        </a> <!-- Link to draw page -->
+    </div>
+
+    <div class="content">
+        <h1>Gallery</h1>
+        <ul class="gallery-images">
+            <!-- Uploaded images will be added here dynamically -->
+        </ul>
+        <label for="upload" class="upload-btn">Upload Image</label>
+        <input type="file" id="upload" accept=".jpg, .jpeg, .png, .webp, .bmp, .tif, .tiff" multiple>
+    </div>
+
+    <script>
+        const uploadInput = document.getElementById('upload');
+        const galleryList = document.querySelector('.gallery-images');
+
+        uploadInput.addEventListener('change', function(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                for (const file of files) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        addImageToGallery(e.target.result);
+                        saveImageToLocalStorage(e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+
+        function addImageToGallery(src) {
+            const li = document.createElement('li');
+            const img = document.createElement('img');
+            img.src = src;
+
+            // Create the remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = 'Remove';
+            removeBtn.classList.add('remove-btn');
+
+            // Add event listener to remove button
+            removeBtn.addEventListener('click', function() {
+                removeImageFromGallery(li, src);
+            });
+
+            li.appendChild(img);
+            li.appendChild(removeBtn);
+            galleryList.appendChild(li);
+        }
+
+        function saveImageToLocalStorage(dataUrl) {
+            let images = JSON.parse(localStorage.getItem('uploadedImages')) || [];
+            images.push(dataUrl);
+            localStorage.setItem('uploadedImages', JSON.stringify(images));
+            console.log('Saved images:', images);
+        }
+
+        function loadImagesFromLocalStorage() {
+            let images = JSON.parse(localStorage.getItem('uploadedImages')) || [];
+            console.log('Loaded images:', images);
+            images.forEach(src => {
+                addImageToGallery(src);
+            });
+        }
+
+        function removeImageFromGallery(listItem, src) {
+            // Remove the image element from the gallery
+            galleryList.removeChild(listItem);
+
+            // Remove the image from localStorage
+            let images = JSON.parse(localStorage.getItem('uploadedImages')) || [];
+            images = images.filter(image => image !== src);
+            localStorage.setItem('uploadedImages', JSON.stringify(images));
+            console.log('Remaining images:', images);
+        }
+
+        // Load images from localStorage on page load
+        window.onload = loadImagesFromLocalStorage;
+    </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>AR Example with Animated Butterfly</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawcdn.githack.com/AR-js-org/AR.js/3.3.2/aframe/build/aframe-ar.js"></script>
+    <script>
+      AFRAME.registerComponent('butterfly-animation', {
+        init: function () {
+          var el = this.el;
+
+          // Animation: Move in a random pattern within screen bounds
+          el.setAttribute('animation__move', {
+            property: 'position',
+            dur: 5000,
+            to: this.randomPosition(), // Call function to get random position
+            loop: true,
+            easing: 'linear'
+          });
+        },
+
+        // Helper function to generate random positions within screen bounds
+        randomPosition: function () {
+          var maxX = 2; // Max X coordinate
+          var maxZ = 2; // Max Z coordinate
+          var randomX = Math.random() * (maxX * 2) - maxX; // Random X within range
+          var randomZ = Math.random() * (maxZ * 2) - maxZ; // Random Z within range
+          return randomX + ' 0 ' + randomZ; // Return position string
+        }
+      });
+    </script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; trackingMethod: best;">
+
+      <!-- Butterfly model -->
+      <a-gltf-model src="model/butterfly.glb" scale="3 3 3" position="0 0 -3" butterfly-animation></a-gltf-model>
+
+      <!-- Camera -->
+      <a-entity camera></a-entity>
+
+    </a-scene>
+  </body>
+</html>

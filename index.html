@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KidVenture</title>
+    <style>
+        @font-face {
+            font-family: 'LoveAndButterfly';
+            src: url('LoveAndButterfly-qZ9xx.otf') format('opentype');
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #B8F3F4;
+            color: #5A2768;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .background {
+            background: url('back for html.jpg') no-repeat center center fixed;
+            background-size: cover;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3; /* Adjust opacity here */
+            background-position: center 150px;
+        }
+
+        .navbar {
+            background-color: #5A2768;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .navbar a, .dropdown-btn {
+            float: left;
+            font-size: 17px;
+            color: #EDE0D4;
+            text-align: center;
+            padding: 14px 20px;
+            text-decoration: none;
+            display: block;
+            position: relative;
+        }
+
+        .navbar a:hover, .dropdown:hover .dropdown-btn {
+            background-color: #D9F2B4;
+            color: #5A2768;
+        }
+
+        .dropdown {
+            float: left;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .dropdown .dropdown-btn {
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background-color: inherit;
+            font-family: inherit;
+            margin: 0;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            background-color: rgba(50, 50, 50, 0.9);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            top: 100%;
+            left: 0;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .dropdown-content a {
+            float: none;
+            color: #EDE0D4;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #575757;
+        }
+
+        .dropdown:hover .dropdown-content {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .content {
+            padding: 0px;
+            text-align: center;
+            margin-top: 0px;
+            flex-grow: 1;
+            position: relative;
+        }
+
+        .content h1 {
+            font-size: 100px;
+            font-family: 'LoveAndButterfly', Arial, sans-serif; /* Apply custom font */
+            display: inline-block; /* Ensure spans are inline */
+        }
+
+        .gallery-btn .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            /* Position the tooltip text */
+            position: absolute;
+            z-index: 1;
+        }
+
+        .gallery-btn:hover .tooltiptext {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="navbar">
+        <div class="dropdown">
+            <!-- Empty dropdown for spacing -->
+        </div>
+        <div class="dropdown">
+            <!-- Empty dropdown for spacing -->
+        </div>
+        <div class="dropdown">
+            <!-- Empty dropdown for spacing -->
+        </div>
+        <div class="dropdown">
+            <!-- Empty dropdown for spacing -->
+        </div>
+        <a href="gallery.html" class="gallery-btn">
+            <img src='model/gallery.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+            <span class="tooltiptext">Gallery!</span>
+        </a>
+        <a href="draw.html" class="gallery-btn">
+            <img src='model/voice-message.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+            <span class="tooltiptext">School Board!</span>
+        </a>
+        <a href="avatar.html" class="gallery-btn">
+            <img src='model/content.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+            <span class="tooltiptext">Create your Avatar!</span>
+        </a>
+        <a href="Lib.html" class="gallery-btn">
+            <img src='model/library.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+            <span class="tooltiptext">Library!</span>
+        </a>
+        <a href="sm.html" class="gallery-btn">
+            <img src='model/magazine.png' alt="Icon" style="width: 50px; height: 50px; vertical-align: middle;">
+            <span class="tooltiptext">School Magazine!</span>
+        </a>
+    </div>
+
+    <div class="content">
+        <h1>Kid<span style="color: green;">Venture</span></h1>
+        <p style="font-size: 25px; margin-top: -60px;font-family: 'LoveAndButterfly', Arial, sans-serif;">Explore KidVenture using the menu above.</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const galleryButtons = document.querySelectorAll('.gallery-btn');
+
+            galleryButtons.forEach(button => {
+                let hoverTimeout;
+
+                button.addEventListener('mouseenter', function () {
+                    hoverTimeout = setTimeout(() => {
+                        const tooltipText = this.querySelector('.tooltiptext').innerText;
+                        const utterance = new SpeechSynthesisUtterance(tooltipText);
+                        window.speechSynthesis.speak(utterance);
+                    }, 3000); // 3 seconds
+                });
+
+                button.addEventListener('mouseleave', function () {
+                    clearTimeout(hoverTimeout);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Head Avatar Maker</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+
+    .avatar-maker {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .avatar {
+        position: relative;
+        width: 100px;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .head {
+        width: 80px;
+        height: 80px;
+        background-color: #ccc;
+        border-radius: 50%;
+        margin-bottom: 10px;
+        position: relative;
+    }
+
+    .eyes {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 16px;
+        height: 16px;
+        background-color: #000;
+        border-radius: 50%;
+    }
+
+    .eyes.left {
+        transform: translateX(-50%) translateX(-10px);
+    }
+
+    .eyes.right {
+        transform: translateX(-50%) translateX(10px);
+    }
+
+    .mouth {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 6px;
+        background-color: #000;
+    }
+
+    .controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .controls button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .controls button:hover {
+        background-color: #0056b3;
+    }
+</style>
+</head>
+<body>
+
+<div class="avatar-maker">
+    <div class="avatar">
+        <div class="head">
+            <div class="eyes left"></div>
+            <div class="eyes right"></div>
+            <div class="mouth"></div>
+        </div>
+        <div class="semicircle"></div>
+    </div>
+    <div class="controls">
+        <button onclick="changeFeatures()">Change Features</button>
+        <button onclick="changeColor()">Change Color</button>
+    </div>
+</div>
+
+<script>
+    function changeFeatures() {
+        var eyes = document.querySelectorAll('.eyes');
+        var mouth = document.querySelector('.mouth');
+
+        eyes.forEach(eye => {
+            eye.style.backgroundColor = getRandomColor();
+        });
+
+        mouth.style.backgroundColor = getRandomColor();
+    }
+
+    function changeColor() {
+        var avatar = document.querySelector('.avatar');
+        var colors = ['#ff6347', '#ffd700', '#00ff7f', '#4682b4', '#ff69b4', '#8a2be2'];
+        var randomColor = colors[Math.floor(Math.random() * colors.length)];
+        avatar.style.backgroundColor = randomColor;
+    }
+
+    function getRandomColor() {
+        var colors = ['#000', '#555', '#777', '#333'];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+</script>
+
+</body>
+</html>

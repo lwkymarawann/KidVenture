@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Published Content</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #B8F3F4;
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        #publishedContent {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            border: 2px solid #5A2768;
+            border-radius: 5px;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Published Content</h1>
+    <div id="publishedContent">
+        <img id="publishedImage" src="" alt="Published Image">
+        <audio id="publishedAudio" controls></audio>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const publishedImage = localStorage.getItem('publishedImage');
+            const publishedAudio = localStorage.getItem('publishedAudio');
+
+            if (publishedImage) {
+                document.getElementById('publishedImage').src = publishedImage;
+            }
+
+            if (publishedAudio) {
+                const audioBlob = new Blob([new Uint8Array(JSON.parse(publishedAudio))], { type: 'audio/webm' });
+                const audioUrl = URL.createObjectURL(audioBlob);
+                document.getElementById('publishedAudio').src = audioUrl;
+            }
+        });
+    </script>
+</body>
+</html>
